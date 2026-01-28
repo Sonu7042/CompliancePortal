@@ -244,7 +244,7 @@ const CompliancePortals = () => {
 
   // ================= UI =================
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="h-full">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Compliance Register</h1>
@@ -268,7 +268,7 @@ const CompliancePortals = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded shadow mb-4">
+      <div className="bg-white p-4 rounded-[20px] shadow mb-4">
         <h3 className="font-semibold mb-3">Filters</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-6 gap-3 text-sm">
@@ -277,27 +277,27 @@ const CompliancePortals = () => {
             placeholder="Origin"
             value={filters.origin}
             onChange={handleFilterChange}
-            className="input"
+            className="input rounded-[10px]"
           />
           <input
             name="category"
             placeholder="Category"
             value={filters.category}
             onChange={handleFilterChange}
-            className="input"
+            className="input rounded-[10px]"
           />
           <input
             name="responsibility"
             placeholder="Responsibility"
             value={filters.responsibility}
             onChange={handleFilterChange}
-            className="input"
+            className="input rounded-[10px]"
           />
           <select
             name="priority"
             value={filters.priority}
             onChange={handleFilterChange}
-            className="input"
+            className="input rounded-[10px]"
           >
             <option value="">Priority</option>
             <option>Very High</option>
@@ -309,7 +309,7 @@ const CompliancePortals = () => {
             name="status"
             value={filters.status}
             onChange={handleFilterChange}
-            className="input"
+            className="input rounded-[10px]"
           >
             <option value="">Status</option>
             <option>Non-Compliance</option>
@@ -318,7 +318,7 @@ const CompliancePortals = () => {
           </select>
           <button
             onClick={clearFilters}
-            className="bg-gray-600 text-white rounded px-3 py-2"
+            className="bg-gray-600 text-white  px-3 py-2 rounded-lg"
           >
             Clear
           </button>
