@@ -329,6 +329,7 @@
 import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
+import logo from "../assets/Bexexlogo.png";
 import {
   LayoutDashboard,
   CheckSquare,
@@ -381,7 +382,7 @@ const Layout = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f0f0f]">
       {/* ================= HEADER ================= */}
-      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-white dark:bg-[#0f0f0f] border-b border-gray-200 dark:border-gray-800">
+      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-white dark:bg-[#0f0f0f]  ">
         <div className="flex items-center justify-between h-full px-4">
           {/* Left */}
           <div className="flex items-center gap-4">
@@ -393,12 +394,13 @@ const Layout = () => {
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center">
-                <Building2 className="text-white" />
+              <div className="w-16 h-16  flex items-center justify-center">
+                {/* <Building2 className="text-white" /> */}
+                <img src={logo} alt="" />
               </div>
-              <h1 className="text-lg font-bold hidden md:block text-gray-900 dark:text-white">
+              {/* <h1 className="text-lg font-bold hidden md:block text-gray-900 dark:text-white">
                 Compliance Portal
-              </h1>
+              </h1> */}
             </div>
           </div>
 
@@ -419,7 +421,7 @@ const Layout = () => {
                 </button>
 
                 {showPlantMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-xl border dark:border-gray-800 z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl  border dark:border-gray-800 z-50">
                     <button
                       onClick={() => {
                         setSelectedPlant(null);
@@ -470,7 +472,7 @@ const Layout = () => {
               </button>
 
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 rounded-xl shadow-xl border dark:border-gray-800">
+                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 rounded-xl  border dark:border-gray-800">
                   {notifications.slice(0, 5).map((n) => (
                     <div
                       key={n.id}
