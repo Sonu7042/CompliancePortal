@@ -36,7 +36,7 @@ import { format } from 'date-fns';
 // --- Reusable UI Components ---
 
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white dark:bg-[#0f0f0f] border border-gray-100 dark:border-gray-800 rounded-2xl md:rounded-3xl shadow-sm transition-all duration-300 ${className}`}>
+  <div className={`bg-white dark:bg-[#0f0f0f] dark:border-gray-800 rounded-lg  md:rounded-3xl shadow-sm transition-all duration-300 ${className}`}>
     {children}
   </div>
 );
@@ -51,22 +51,45 @@ const MetricCard = ({ title, value, icon: Icon, variant, trend, trendPositive = 
 
   return (
     <Card className="p-6 hover:shadow-md hover:border-gray-200 dark:hover:border-gray-700 group">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-3 rounded-2xl ${styles[variant]} transition-transform duration-300 group-hover:scale-110`}>
-          <Icon size={24} />
+  <div className="flex justify-between items-start">
+    
+    {/* LEFT CONTENT */}
+    <div className="">
+      <p className="text-[11px] font-mono uppercase tracking-widest text-gray-400 dark:text-gray-500">
+        {title}
+      </p>
+      <h3 className="text-3xl font-normal text-gray-900 dark:text-white tracking-tight mb-4">
+        {value}
+      </h3>
+
+      {trend && (
+        <div
+          className={`inline-flex items-center gap-2 text-xs font-bold px-2 py-1 rounded-full
+          ${trendPositive
+            ? 'bg-emerald-50 text-emerald-600'
+            : 'bg-rose-50 text-rose-600'
+          }`}
+        >
+          {trendPositive ? (
+            <ArrowUpRight size={12} />
+          ) : (
+            <ArrowDownRight size={12} />
+          )}
+          {trend}
         </div>
-        {trend && (
-          <div className={`flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${trendPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-            {trendPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-            {trend}
-          </div>
-        )}
-      </div>
-      <div className="space-y-1">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{title}</p>
-        <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{value}</h3>
-      </div>
-    </Card>
+      )}
+    </div>
+
+    {/* RIGHT BIG ICON */}
+    <div
+      className={`p-5 rounded-2xl ${styles[variant]} 
+      transition-transform duration-300 group-hover:scale-110`}
+    >
+      <Icon size={36} />
+    </div>
+  </div>
+</Card>
+
   );
 };
 
@@ -86,8 +109,8 @@ const DeadlineInsightCard = ({ title, subtitle, count, variant }) => {
   return (
     <Card className={`p-6 flex items-center justify-between ${themes[variant]}`}>
       <div className="space-y-1">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">{title}</p>
-        <h4 className="text-lg font-bold text-gray-900 dark:text-white">{subtitle}</h4>
+        <p className="text-[10px] font-mono uppercase tracking-widest text-gray-400 dark:text-gray-500">{title}</p>
+        <h4 className="text-lg font-normal text-gray-900 dark:text-white">{subtitle}</h4>
       </div>
       <div className={`text-4xl font-bold ${textColors[variant]}`}>{count}</div>
     </Card>
