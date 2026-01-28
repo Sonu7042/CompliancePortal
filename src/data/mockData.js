@@ -328,8 +328,8 @@ export const users = [
   },
   {
     id: 2,
-    username: 'mumbai',
-    password: 'mumbai123',
+    username: 'Compliant',
+    password: 'Compliant123',
     role: 'plant',
     name: 'Rajesh Kumar',
     email: 'rajesh.kumar@company.com',
@@ -338,8 +338,8 @@ export const users = [
   },
   {
     id: 3,
-    username: 'pune',
-    password: 'pune123',
+    username: 'user',
+    password: 'user123',
     role: 'plant',
     name: 'Priya Sharma',
     email: 'priya.sharma@company.com',

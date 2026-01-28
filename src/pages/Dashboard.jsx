@@ -12,10 +12,14 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  Legend,
+  ResponsiveContainer,
+  Area,
+  AreaChart
 } from 'recharts';
 
 import {
+  TrendingUp,
   AlertCircle,
   Clock,
   FileText,
@@ -113,18 +117,13 @@ const CustomTooltip = ({ active, payload, label }) => {
 // --- Main Dashboard Component ---
 
 const Dashboard = () => {
-  const {
-    getDashboardMetrics,
-    getPlantComparison,
-    historicalData,
-    getFilteredItems,
-    user
-  } = useApp();
+  const { getDashboardMetrics, getCategoryBreakdown, getPlantComparison, historicalData, getFilteredItems, user } = useApp();
 
   const metrics = getDashboardMetrics();
+  const categoryData = getCategoryBreakdown();
   const plantData = getPlantComparison();
   const items = getFilteredItems();
-   
+
   const COLORS = {
     compliant: '#10B981',
     pending: '#F59E0B',
