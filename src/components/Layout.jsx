@@ -380,9 +380,9 @@ const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#0f0f0f]">
+    <div className="min-h-screen bg-[#F8F8F8] dark:bg-[#0f0f0f]">
       {/* ================= HEADER ================= */}
-      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-white dark:bg-[#0f0f0f]  ">
+      <header className="fixed top-0 left-0 right-0 h-16 z-50  dark:bg-[#0f0f0f]  ">
         <div className="flex items-center justify-between h-full px-4">
           {/* Left */}
           <div className="flex items-center gap-4">
@@ -465,7 +465,7 @@ const Layout = () => {
               >
                 <Bell />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white text-xs rounded-full flex items-center justify-center">
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-gray-600 text-white text-xs rounded-full flex items-center justify-center">
                     {unreadCount}
                   </span>
                 )}
@@ -501,10 +501,10 @@ const Layout = () => {
       <aside
         className={`
           fixed top-16 left-0 bottom-0 z-40
-          bg-white dark:bg-[#0f0f0f]
-          border-r border-gray-200 dark:border-gray-800
+         dark:bg-[#0f0f0f]
+          border-rdark:border-gray-800
           transition-all duration-300
-          ${sidebarOpen ? "w-64" : "w-20"}
+          ${sidebarOpen ? "w-60" : "w-20"}
         `}
       >
         <nav className="mt-4 space-y-1">
@@ -522,13 +522,13 @@ const Layout = () => {
                   transition
                   ${
                     active
-                      ? "bg-red-50 dark:bg-red-900/20 text-red-600"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "bg-gray-200 dark:bg-white-900/20 text-[#181819]"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }
                 `}
               >
                 {active && (
-                  <span className="absolute left-0 top-2 bottom-2 w-1 bg-red-600 rounded-r-full" />
+                  <span className="absolute left-0 top-2 bottom-2 w-1 bg-gray-600" />
                 )}
 
                 <Icon className="w-6 h-6 shrink-0" />
@@ -556,10 +556,10 @@ const Layout = () => {
       {/* ================= MAIN ================= */}
       <main
         className={`pt-16 transition-all duration-300 ${
-          sidebarOpen ? "lg:pl-64" : "lg:pl-20"
+          sidebarOpen ? "lg:pl-60" : "lg:pl-20"
         }`}
       >
-        <div className="p-6">
+        <div className="p-4">
           <Outlet />
         </div>
       </main>
