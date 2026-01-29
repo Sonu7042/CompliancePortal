@@ -330,6 +330,7 @@ import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import logo from "../assets/Bexexlogo.png";
+import background from "../assets/bexex-bg.png";
 import {
   LayoutDashboard,
   CheckSquare,
@@ -380,7 +381,7 @@ const Layout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F8F8] dark:bg-[#0f0f0f]">
+    <div className="min-h-screen bg-[#e8e8e8] dark:bg-[#0f0f0f]">
       {/* ================= HEADER ================= */}
       <header className="fixed top-0 left-0 right-0 h-16 z-50  dark:bg-[#0f0f0f]  ">
         <div className="flex items-center justify-between h-full px-4">
