@@ -39,6 +39,7 @@ const CompliancePortals = () => {
     "5-Yearly",
   ];
 
+
   const initialState = {
     origin: "",
     category: "",
@@ -57,6 +58,7 @@ const CompliancePortals = () => {
     upcoming: "",
     remarks: "",
   };
+
 
   const temp = {
     origin: "Factories Act, 1948",
@@ -82,6 +84,7 @@ const CompliancePortals = () => {
     if (!editableFields.includes(field)) return;
     setEditingCell({ rowIndex, field });
   };
+
 
   const handleCellChange = (e, rowIndex, field) => {
     const updated = [...data];
@@ -109,7 +112,7 @@ const CompliancePortals = () => {
     setEditingCell({ rowIndex: null, field: null });
   };
 
-  const [form, setForm] = useState(initialState);
+  const [form, setForm] = useState(temp);
 
   const [filters, setFilters] = useState({
     origin: "",
@@ -253,8 +256,8 @@ const CompliancePortals = () => {
   const reader = new FileReader();
 
   reader.onload = (evt) => {
-    const data = new Uint8Array(evt.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
+    const excelData = new Uint8Array(evt.target.result);
+    const workbook = XLSX.read(excelData, { type: "array" });
 
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
@@ -263,27 +266,44 @@ const CompliancePortals = () => {
       defval: "",
     });
 
-    // OPTIONAL: map Excel columns to your state keys
-    const mapped = json.map((row) => ({
-      origin: row["Origin"] || "",
-      category: row["Category"] || "",
-      traceability: row["Traceability"] || "",
-      obligations: row["Obligations"] || "",
-      provision: row["Provision"] || "",
-      applicability: row["Applicability"] || "",
-      responsibility: row["Responsibility"] || "",
-      periodicity: row["Periodicity"] || "Quarterly",
-      priority: row["Priority"] || "",
-      forms: row["Forms"] || "",
-      doneDate: row["Done Date"] || "",
-      remarks: row["Remarks"] || "",
-    }));
+    // ✅ MAP + AUTO CALCULATION
+    const mapped = json.map((row) => {
+      const periodicity = row["Periodicity"] || "Quarterly";
+      const doneDate = row["Done Date"] || "";
 
-    setData(mapped); // 👈 table update
+      // 🔥 AUTO DUE DATE
+      const dueDate = getDueDateByPeriodicity(doneDate, periodicity);
+
+      // 🔥 AUTO STATUS / DAYS / UPCOMING
+      const { status, daysBefore, upcoming } =
+        calculateStatusAndDays(dueDate);
+
+      return {
+        origin: row["Origin"] || "",
+        category: row["Category"] || "",
+        traceability: row["Traceability"] || "",
+        obligations: row["Obligations"] || "",
+        provision: row["Provision"] || "",
+        applicability: row["Applicability"] || "",
+        responsibility: row["Responsibility"] || "",
+        periodicity,
+        priority: row["Priority"] || "",
+        forms: row["Forms"] || "",
+        doneDate,
+        dueDate,
+        status,
+        daysBefore,
+        upcoming,
+        remarks: row["Remarks"] || "",
+      };
+    });
+
+    setData(mapped); // ✅ table + localStorage auto update
   };
 
   reader.readAsArrayBuffer(file);
 };
+
 
 
 const downloadExcel = () => {
@@ -362,7 +382,7 @@ const downloadExcel = () => {
     </button>
 
     {/* Clear All */}
-    <button
+    {/* <button
       onClick={() => {
         localStorage.removeItem(STORAGE_KEY);
         setData([]);
@@ -370,7 +390,7 @@ const downloadExcel = () => {
       className="bg-red-600 text-white px-4 py-2 rounded"
     >
       Clear All
-    </button>
+    </button> */}
   </div>
 </div>
 
