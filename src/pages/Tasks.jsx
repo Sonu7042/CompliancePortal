@@ -398,62 +398,60 @@ const CompliancePortals = () => {
 
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-[20px] shadow mb-4">
-        <h3 className="font-semibold mb-3">Filters</h3>
+    <div className="bg-white p-4 rounded-[20px] shadow mb-4">
+  <h3 className="font-semibold mb-3">Filters</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
-          <input
-            name="origin"
-            placeholder="Origin"
-            value={filters.origin}
-            onChange={handleFilterChange}
-            className="input rounded-[10px] "
-          />
-          {/* <input
-            name="category"
-            placeholder="Category"
-            value={filters.category}
-            onChange={handleFilterChange}
-            className="input rounded-[10px]"
-          /> */}
-          {/* <input
-            name="responsibility"
-            placeholder="Responsibility"
-            value={filters.responsibility}
-            onChange={handleFilterChange}
-            className="input rounded-[10px]"
-          /> */}
-          <select
-            name="priority"
-            value={filters.priority}
-            onChange={handleFilterChange}
-            className="input rounded-[10px]"
-          >
-            <option value="">Priority</option>
-            <option>Very High</option>
-            <option>High</option>
-            <option>Medium</option>
-            <option>Low</option>
-          </select>
-          <select
-            name="status"
-            value={filters.status}
-            onChange={handleFilterChange}
-            className="input rounded-[10px]"
-          >
-            <option value="">Status</option>
-            <option>Non-Compliance</option>
-            <option>Compliance Initiated</option>
-            <option>Complied</option>
-          </select>
-          <button
-            onClick={clearFilters}
-            className="bg-gray-600 text-white w-32  px-3 py-2 rounded-lg"
-          >
-            Clear
-          </button>
-        </div>
-      </div>
+  <div className="flex flex-col md:flex-row gap-4 text-sm w-full">
+
+    {/* SEARCH – 60% */}
+    <input
+      name="origin"
+      placeholder="Search by Origin"
+      value={filters.origin}
+      onChange={handleFilterChange}
+      className="input rounded-[10px] w-full md:w-[60%]"
+    />
+
+    {/* RIGHT SIDE CONTROLS */}
+    <div className="flex flex-1 gap-4">
+
+      <select
+        name="priority"
+        value={filters.priority}
+        onChange={handleFilterChange}
+        className="input rounded-[10px] flex-1"
+      >
+        <option value="">Priority</option>
+        <option>Very High</option>
+        <option>High</option>
+        <option>Medium</option>
+        <option>Low</option>
+      </select>
+
+      <select
+        name="status"
+        value={filters.status}
+        onChange={handleFilterChange}
+        className="input rounded-[10px] flex-1"
+      >
+        <option value="">Status</option>
+        <option>Non-Compliance</option>
+        <option>Compliance Initiated</option>
+        <option>Complied</option>
+      </select>
+
+      <button
+        onClick={clearFilters}
+        className="bg-gray-600 hover:bg-gray-700 transition text-white px-4 py-2 rounded-lg whitespace-nowrap"
+      >
+        Clear
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
 
       {/* Table */}
       <div className="overflow-x-scroll bg-white shadow rounded">
