@@ -109,7 +109,7 @@ const CompliancePortals = () => {
     setEditingCell({ rowIndex: null, field: null });
   };
 
-  const [form, setForm] = useState(temp);
+  const [form, setForm] = useState(initialState);
 
   const [filters, setFilters] = useState({
     origin: "",
