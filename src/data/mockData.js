@@ -141,6 +141,7 @@ const complianceTemplates = [
   { name: 'Calibration Certificate', category: 5, frequency: 'yearly', priority: 'medium', description: 'Annual calibration of measuring instruments' },
   { name: 'Customer Complaint Analysis', category: 5, frequency: 'monthly', priority: 'low', description: 'Monthly customer complaint analysis report' },
 
+  
   // Other Compliance
   { name: 'Trade License Renewal', category: 6, frequency: 'yearly', priority: 'medium', description: 'Annual trade license renewal' },
   { name: 'GST Returns Filing', category: 6, frequency: 'monthly', priority: 'high', description: 'Monthly GST returns filing' },

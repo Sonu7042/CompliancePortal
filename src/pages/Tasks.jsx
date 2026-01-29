@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 
 const STORAGE_KEY = "compliance_data";
 
@@ -242,30 +245,135 @@ const CompliancePortals = () => {
     };
   };
 
+
+  const handleExcelUpload = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (evt) => {
+    const data = new Uint8Array(evt.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+
+    const json = XLSX.utils.sheet_to_json(worksheet, {
+      defval: "",
+    });
+
+    // OPTIONAL: map Excel columns to your state keys
+    const mapped = json.map((row) => ({
+      origin: row["Origin"] || "",
+      category: row["Category"] || "",
+      traceability: row["Traceability"] || "",
+      obligations: row["Obligations"] || "",
+      provision: row["Provision"] || "",
+      applicability: row["Applicability"] || "",
+      responsibility: row["Responsibility"] || "",
+      periodicity: row["Periodicity"] || "Quarterly",
+      priority: row["Priority"] || "",
+      forms: row["Forms"] || "",
+      doneDate: row["Done Date"] || "",
+      remarks: row["Remarks"] || "",
+    }));
+
+    setData(mapped); // 👈 table update
+  };
+
+  reader.readAsArrayBuffer(file);
+};
+
+
+const downloadExcel = () => {
+  if (!data.length) return;
+
+  const exportData = data.map((row) => ({
+    Origin: row.origin,
+    Category: row.category,
+    Traceability: row.traceability,
+    Obligations: row.obligations,
+    Provision: row.provision,
+    Applicability: row.applicability,
+    Responsibility: row.responsibility,
+    Periodicity: row.periodicity,
+    Priority: row.priority,
+    Forms: row.forms,
+    "Done Date": row.doneDate,
+    "Due Date": row.dueDate,
+    Status: row.status,
+    "Days Before": row.daysBefore,
+    Upcoming: row.upcoming,
+    Remarks: row.remarks,
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Compliance");
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const file = new Blob([excelBuffer], {
+    type:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  saveAs(file, "Compliance_Register.xlsx");
+};
+
+
   // ================= UI =================
   return (
     <div className="h-full">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Compliance Register</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            + Add Compliance
-          </button>
-          <button
-            onClick={() => {
-              localStorage.removeItem(STORAGE_KEY);
-              setData([]);
-            }}
-            className="bg-red-600 text-white px-4 py-2 rounded"
-          >
-            Clear All
-          </button>
-        </div>
-      </div>
+     <div className="flex justify-between items-center mb-4">
+     <h1 className="text-2xl font-bold">Compliance Register</h1>
+
+  <div className="flex gap-2 items-center">
+    {/* Upload Excel */}
+    <label className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer">
+      Upload Excel
+      <input
+        type="file"
+        accept=".xlsx,.xls"
+        onChange={handleExcelUpload}
+        className="hidden"
+      />
+    </label>
+
+    {/* Download Excel */}
+    <button
+      onClick={downloadExcel}
+      className="bg-purple-600 text-white px-4 py-2 rounded"
+    >
+      Download Excel
+    </button>
+
+    {/* Add Compliance */}
+    <button
+      onClick={() => setShowForm(true)}
+      className="bg-blue-600 text-white px-4 py-2 rounded"
+    >
+      + Add Compliance
+    </button>
+
+    {/* Clear All */}
+    <button
+      onClick={() => {
+        localStorage.removeItem(STORAGE_KEY);
+        setData([]);
+      }}
+      className="bg-red-600 text-white px-4 py-2 rounded"
+    >
+      Clear All
+    </button>
+  </div>
+</div>
+
 
       {/* Filters */}
       <div className="bg-white p-4 rounded-[20px] shadow mb-4">
