@@ -32,7 +32,7 @@ export const AppProvider = ({ children }) => {
   const [historicalData] = useState(mockData.historicalData);
 
   // UI state
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState(null);
 
   // Theme toggle
@@ -77,10 +77,10 @@ export const AppProvider = ({ children }) => {
       prev.map(item =>
         item.id === itemId
           ? {
-              ...item,
-              status: newStatus,
-              completedDate: newStatus === 'compliant' ? new Date() : item.completedDate
-            }
+            ...item,
+            status: newStatus,
+            completedDate: newStatus === 'compliant' ? new Date() : item.completedDate
+          }
           : item
       )
     );
@@ -101,17 +101,17 @@ export const AppProvider = ({ children }) => {
       prev.map(item =>
         item.id === itemId
           ? {
-              ...item,
-              comments: [
-                ...item.comments,
-                {
-                  id: Math.random().toString(36).substr(2, 9),
-                  text: comment,
-                  author: user.name,
-                  date: new Date()
-                }
-              ]
-            }
+            ...item,
+            comments: [
+              ...item.comments,
+              {
+                id: Math.random().toString(36).substr(2, 9),
+                text: comment,
+                author: user.name,
+                date: new Date()
+              }
+            ]
+          }
           : item
       )
     );

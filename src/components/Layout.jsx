@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
@@ -36,6 +37,20 @@ const Layout = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showPlantMenu, setShowPlantMenu] = useState(false);
 
+  // Close sidebar on mobile when navigating
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        // Keep sidebar open on desktop if preferred, or keep current state
+        // For now, let's just focus on closing it when navigating on mobile
+      }
+    };
+
+    if (window.innerWidth < 1024 && sidebarOpen) {
+      setSidebarOpen(false);
+    }
+  }, [location.pathname]);
+
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const navigation = [
@@ -54,7 +69,7 @@ const Layout = () => {
   return (
     <div className="min-h-screen bg-[#F8F8F8] dark:bg-[#0f0f0f]">
       {/* ================= HEADER ================= */}
-      <header className="fixed top-0 left-0 right-0 h-16 z-50  dark:bg-[#0f0f0f]  ">
+      <header className="fixed top-0 left-0 right-0 h-16 z-50 bg-white  dark:bg-[#0f0f0f]">
         <div className="flex items-center justify-between h-full px-4">
           {/* Left */}
           <div className="flex items-center gap-4">
@@ -148,9 +163,8 @@ const Layout = () => {
                   {notifications.slice(0, 5).map((n) => (
                     <div
                       key={n.id}
-                      className={`px-4 py-3 text-sm ${
-                        !n.read ? "bg-red-50 dark:bg-red-900/20" : ""
-                      }`}
+                      className={`px-4 py-3 text-sm ${!n.read ? "bg-red-50 dark:bg-red-900/20" : ""
+                        }`}
                     >
                       <p className="font-medium">{n.title}</p>
                       <p className="text-xs opacity-70">{n.message}</p>
@@ -162,7 +176,7 @@ const Layout = () => {
 
             {/* User */}
             <div className="hidden md:block text-right">
-              <p className="text-sm font-semibold">{user?.name}</p>
+              <p className="text-sm font-semibold">{user?.username}</p>
               <p className="text-xs opacity-60">{user?.designation}</p>
             </div>
           </div>
@@ -173,10 +187,13 @@ const Layout = () => {
       <aside
         className={`
           fixed top-16 left-0 bottom-0 z-40
-         dark:bg-[#0f0f0f]
-          border-rdark:border-gray-800
+          dark:bg-[#0f0f0f] bg-white
+          border-r dark:border-gray-800 border-gray-100
           transition-all duration-300
-          ${sidebarOpen ? "w-60" : "w-20"}
+          ${sidebarOpen
+            ? "translate-x-0 w-64 md:w-60"
+            : "-translate-x-full md:translate-x-0 md:w-20"
+          }
         `}
       >
         <nav className="mt-4 space-y-1">
@@ -192,10 +209,9 @@ const Layout = () => {
                   relative flex items-center gap-4
                   px-4 py-3 mx-2 rounded-xl
                   transition
-                  ${
-                    active
-                      ? "bg-gray-200 dark:bg-white-900/20 text-[#181819]"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  ${active
+                    ? "bg-gray-200 dark:bg-white-900/20 text-[#181819]"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }
                 `}
               >
@@ -227,9 +243,8 @@ const Layout = () => {
 
       {/* ================= MAIN ================= */}
       <main
-        className={`pt-16 transition-all duration-300 ${
-          sidebarOpen ? "lg:pl-60" : "lg:pl-20"
-        }`}
+        className={`pt-16 transition-all duration-300 ${sidebarOpen ? "md:pl-60" : "md:pl-20"
+          }`}
       >
         <div className="p-4">
           <Outlet />
