@@ -169,7 +169,7 @@ const CompliancePortals = () => {
   const filteredData = data.filter((item) => {
     // console.log(item)
     return (
-      (!filters.origin || item.origin[0] === filters.origin[0]) &&
+      (!filters.origin || item.origin[0]?.toLowerCase() === filters.origin[0]?.toLowerCase() ) &&
       (!filters.category || item.category === filters.category) &&
       (!filters.responsibility ||
         item.responsibility === filters.responsibility) &&
@@ -566,6 +566,15 @@ const CompliancePortals = () => {
                   </td>
 
                   <td className="border p-1">{item.remarks}</td>
+                  <td className="border p-1 text-center">
+                    <button
+                      type="button"
+                      onClick={() => handleSubmit(item)}
+                      className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition"
+                    >
+                      Submit
+                    </button>
+                  </td>
                 </tr>
               ))
             )}
