@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { Upload, FileText } from "lucide-react";
 
 
 const STORAGE_KEY = "compliance_data";
@@ -70,7 +71,7 @@ const CompliancePortals = () => {
     responsibility: "HR Manager",
     periodicity: "Annual",
     priority: "High",
-    forms: "Form 21",
+    forms: "",
     doneDate: "2025-01-10",
     dueDate: "2025-03-31",
     status: "Non-Compliance",
@@ -169,8 +170,9 @@ const CompliancePortals = () => {
 
   // ================= FILTER LOGIC =================
   const filteredData = data.filter((item) => {
+    // console.log(item)
     return (
-      (!filters.origin || item.origin === filters.origin) &&
+      (!filters.origin || item.origin[0] === filters.origin[0]) &&
       (!filters.category || item.category === filters.category) &&
       (!filters.responsibility ||
         item.responsibility === filters.responsibility) &&
@@ -250,21 +252,21 @@ const CompliancePortals = () => {
 
 
   const handleExcelUpload = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
+    const reader = new FileReader();
 
   reader.onload = (evt) => {
     const excelData = new Uint8Array(evt.target.result);
     const workbook = XLSX.read(excelData, { type: "array" });
 
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
 
-    const json = XLSX.utils.sheet_to_json(worksheet, {
-      defval: "",
-    });
+      const json = XLSX.utils.sheet_to_json(worksheet, {
+        defval: "",
+      });
 
     // ✅ MAP + AUTO CALCULATION
     const mapped = json.map((row) => {
@@ -306,80 +308,80 @@ const CompliancePortals = () => {
 
 
 
-const downloadExcel = () => {
-  if (!data.length) return;
+  const downloadExcel = () => {
+    if (!data.length) return;
 
-  const exportData = data.map((row) => ({
-    Origin: row.origin,
-    Category: row.category,
-    Traceability: row.traceability,
-    Obligations: row.obligations,
-    Provision: row.provision,
-    Applicability: row.applicability,
-    Responsibility: row.responsibility,
-    Periodicity: row.periodicity,
-    Priority: row.priority,
-    Forms: row.forms,
-    "Done Date": row.doneDate,
-    "Due Date": row.dueDate,
-    Status: row.status,
-    "Days Before": row.daysBefore,
-    Upcoming: row.upcoming,
-    Remarks: row.remarks,
-  }));
+    const exportData = data.map((row) => ({
+      Origin: row.origin,
+      Category: row.category,
+      Traceability: row.traceability,
+      Obligations: row.obligations,
+      Provision: row.provision,
+      Applicability: row.applicability,
+      Responsibility: row.responsibility,
+      Periodicity: row.periodicity,
+      Priority: row.priority,
+      Forms: row.forms,
+      "Done Date": row.doneDate,
+      "Due Date": row.dueDate,
+      Status: row.status,
+      "Days Before": row.daysBefore,
+      Upcoming: row.upcoming,
+      Remarks: row.remarks,
+    }));
 
-  const worksheet = XLSX.utils.json_to_sheet(exportData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Compliance");
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Compliance");
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
 
-  const file = new Blob([excelBuffer], {
-    type:
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
+    const file = new Blob([excelBuffer], {
+      type:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  saveAs(file, "Compliance_Register.xlsx");
-};
+    saveAs(file, "Compliance_Register.xlsx");
+  };
 
 
   // ================= UI =================
   return (
     <div className="h-full">
       {/* Header */}
-     <div className="flex justify-between items-center mb-4">
-     <h1 className="text-2xl font-bold">Compliance Register</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Compliance Register</h1>
 
-  <div className="flex gap-2 items-center">
-    {/* Upload Excel */}
-    <label className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer">
-      Upload Excel
-      <input
-        type="file"
-        accept=".xlsx,.xls"
-        onChange={handleExcelUpload}
-        className="hidden"
-      />
-    </label>
+        <div className="flex gap-2 items-center">
+          {/* Upload Excel */}
+          <label className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer">
+            Upload Excel
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              onChange={handleExcelUpload}
+              className="hidden"
+            />
+          </label>
 
-    {/* Download Excel */}
-    <button
-      onClick={downloadExcel}
-      className="bg-purple-600 text-white px-4 py-2 rounded"
-    >
-      Download Excel
-    </button>
+          {/* Download Excel */}
+          <button
+            onClick={downloadExcel}
+            className="bg-purple-600 text-white px-4 py-2 rounded"
+          >
+            Download Excel
+          </button>
 
-    {/* Add Compliance */}
-    <button
-      onClick={() => setShowForm(true)}
-      className="bg-blue-600 text-white px-4 py-2 rounded"
-    >
-      + Add Compliance
-    </button>
+          {/* Add Compliance */}
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            + Add Compliance
+          </button>
 
     {/* Clear All */}
     {/* <button
@@ -399,28 +401,28 @@ const downloadExcel = () => {
       <div className="bg-white p-4 rounded-[20px] shadow mb-4">
         <h3 className="font-semibold mb-3">Filters</h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-3 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-sm">
           <input
             name="origin"
             placeholder="Origin"
             value={filters.origin}
             onChange={handleFilterChange}
-            className="input rounded-[10px]"
+            className="input rounded-[10px] "
           />
-          <input
+          {/* <input
             name="category"
             placeholder="Category"
             value={filters.category}
             onChange={handleFilterChange}
             className="input rounded-[10px]"
-          />
-          <input
+          /> */}
+          {/* <input
             name="responsibility"
             placeholder="Responsibility"
             value={filters.responsibility}
             onChange={handleFilterChange}
             className="input rounded-[10px]"
-          />
+          /> */}
           <select
             name="priority"
             value={filters.priority}
@@ -446,7 +448,7 @@ const downloadExcel = () => {
           </select>
           <button
             onClick={clearFilters}
-            className="bg-gray-600 text-white  px-3 py-2 rounded-lg"
+            className="bg-gray-600 text-white w-32  px-3 py-2 rounded-lg"
           >
             Clear
           </button>
@@ -454,7 +456,7 @@ const downloadExcel = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white shadow rounded">
+      <div className="overflow-x-scroll bg-white shadow rounded">
         <table className="min-w-full border text-xs">
           <thead className="bg-gray-200 text-center">
             <tr>
@@ -507,7 +509,7 @@ const downloadExcel = () => {
                       onDoubleClick={() => handleDoubleClick(index, field)}
                     >
                       {editingCell.rowIndex === index &&
-                      editingCell.field === field ? (
+                        editingCell.field === field ? (
                         field === "periodicity" ? (
                           // 🔽 Periodicity Dropdown
                           <select
@@ -525,18 +527,39 @@ const downloadExcel = () => {
                           </select>
                         ) : (
                           // ✏️ Normal Input
-                          <input
-                            autoFocus
-                            type={field.includes("Date") ? "date" : "text"}
-                            value={item[field]}
-                            onChange={(e) => handleCellChange(e, index, field)}
-                            onBlur={stopEditing}
-                            onKeyDown={(e) =>
-                              e.key === "Enter" && stopEditing()
-                            }
-                            className="w-full border px-1 text-xs"
-                          />
+                          field === "forms" ? (
+                            <input
+                              autoFocus
+                              type="file"
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  handleCellChange({ target: { value: file.name } }, index, field);
+                                }
+                                stopEditing();
+                              }}
+                              onBlur={stopEditing}
+                              className="w-full border px-1 text-[10px]"
+                            />
+                          ) : (
+                            <input
+                              autoFocus
+                              type={field.includes("Date") ? "date" : "text"}
+                              value={item[field]}
+                              onChange={(e) => handleCellChange(e, index, field)}
+                              onBlur={stopEditing}
+                              onKeyDown={(e) =>
+                                e.key === "Enter" && stopEditing()
+                              }
+                              className="w-full border px-1 text-xs"
+                            />
+                          )
                         )
+                      ) : field === "forms" ? (
+                        <div className="flex items-center gap-1 justify-center text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 max-w-[120px] mx-auto overflow-hidden">
+                          <FileText size={12} className="shrink-0" />
+                          <span className="truncate">{item[field] || "Upload"}</span>
+                        </div>
                       ) : (
                         item[field]
                       )}
@@ -545,21 +568,19 @@ const downloadExcel = () => {
 
                   <td className="border p-1">{item.dueDate}</td>
                   <td
-                    className={`border p-1 font-semibold ${
-                      item.status === "Non-Compliance"
-                        ? "text-red-400"
-                        : "text-green-400"
-                    }`}
+                    className={`border p-1 font-semibold ${item.status === "Non-Compliance"
+                      ? "text-red-400"
+                      : "text-green-400"
+                      }`}
                   >
                     {item.status}
                   </td>
                   <td className="border p-1">{item.daysBefore}</td>
                   <td
-                    className={`border p-1 font-semibold ${
-                      item.upcoming === "Expired"
-                        ? "text-red-400"
-                        : "text-green-400"
-                    }`}
+                    className={`border p-1 font-semibold ${item.upcoming === "Expired"
+                      ? "text-red-400"
+                      : "text-green-400"
+                      }`}
                   >
                     {item.upcoming}
                   </td>
@@ -584,8 +605,8 @@ const downloadExcel = () => {
             >
               {Object.keys(initialState).map((key) =>
                 key === "remarks" ||
-                key === "provision" ||
-                key === "obligations" ? (
+                  key === "provision" ||
+                  key === "obligations" ? (
                   <textarea
                     key={key}
                     name={key}
@@ -594,6 +615,34 @@ const downloadExcel = () => {
                     className="input md:col-span-3"
                     onChange={handleChange}
                   />
+
+                ) : key === "forms" ? (
+                  <div key={key} className="flex flex-col gap-1">
+                    <label className="text-[10px] uppercase font-semibold text-gray-400 ml-1">Upload Form</label>
+                    <div className="relative group">
+                      <input
+                        type="file"
+                        name={key}
+                        id="form-upload"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setForm((prev) => ({ ...prev, forms: file.name }));
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor="form-upload"
+                        className="input flex items-center justify-between cursor-pointer hover:border-blue-400 transition-colors bg-blue-50/30"
+                      >
+                        <span className="truncate text-gray-600">
+                          {form.forms || "Select file..."}
+                        </span>
+                        <Upload size={16} className="text-blue-500" />
+                      </label>
+                    </div>
+                  </div>
                 ) : (
                   <input
                     key={key}
