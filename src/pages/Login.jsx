@@ -147,40 +147,40 @@ const Login = () => {
             <div className="space-y-2 text-sm">
               <button
                 type="button"
-                onClick={() => fillCredentials("admin", "admin123")}
+                onClick={() => fillCredentials("admin01", "admin123")}
                 className={`w-full flex justify-between items-center p-2 rounded hover:bg-gray-100 transition ${
                   darkMode ? "hover:bg-gray-600" : ""
                 }`}
               >
-                <span>Corporate Admin:</span>
+                <span>Admin</span>
                 <code className="text-indigo-600 font-mono">
-                  admin / admin123
+                  admin01 / admin123
                 </code>
               </button>
 
               <button
                 type="button"
-                onClick={() => fillCredentials("Compliant", "Compliant123")}
+                onClick={() => fillCredentials("Compliance", "CompliantManager123")}
                 className={`w-full flex justify-between items-center p-2 rounded hover:bg-gray-100 transition ${
                   darkMode ? "hover:bg-gray-600" : ""
                 }`}
               >
-                <span>Mumbai Plant:</span>
+                <span>Compliance</span>
                 <code className="text-indigo-600 font-mono">
-                  Compliant / Compliant123
+                  Compliance Manager/ CompliantManager123
                 </code>
               </button>
 
               <button
                 type="button"
-                onClick={() => fillCredentials("user", "user123")}
+                onClick={() => fillCredentials("user01", "user123")}
                 className={`w-full flex justify-between items-center p-2 rounded hover:bg-gray-100 transition ${
                   darkMode ? "hover:bg-gray-600" : ""
                 }`}
               >
-                <span>Pune Plant:</span>
+                <span>User</span>
                 <code className="text-indigo-600 font-mono">
-                  user / user123
+                  user01 / user123
                 </code>
               </button>
             </div>

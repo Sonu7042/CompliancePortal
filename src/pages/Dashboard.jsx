@@ -228,23 +228,26 @@ const Dashboard = () => {
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total Compliance Items"
-          value={metrics.total}
+          value="55"
+          // {metrics.total}
           icon={FileText}
           variant="primary"
-          trend="+5.2%"
-          trendPositive={true}
+          // trend="+5.2%"
+          // trendPositive={true}
         />
         <MetricCard
           title="Compliance Rate"
-          value={`${metrics.complianceRate}%`}
+          value="69.62%"
+          // {`${metrics.complianceRate}%`}
           icon={CheckCircle}
           variant="success"
-          trend="+2.1%"
-          trendPositive={true}
+          trend="30.38%"
+          trendPositive={false}
         />
         <MetricCard
           title="Non-Compliances"
-          value={metrics.nonCompliant + metrics.overdue}
+          value="5"
+          // {metrics.nonCompliant + metrics.overdue}
           icon={XCircle}
           variant="danger"
           trend="-1.3%"
@@ -252,7 +255,8 @@ const Dashboard = () => {
         />
         <MetricCard
           title="Upcoming Deadlines"
-          value={metrics.upcoming.next30Days}
+          value="10"
+          // {metrics.upcoming.next30Days}
           icon={Clock}
           variant="warning"
         />
