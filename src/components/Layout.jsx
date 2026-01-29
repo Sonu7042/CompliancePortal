@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import logo from "../assets/Bexexlogo.png";
-import background from "../assets/bexex-bg.png";
+// import background from "../assets/bexex-bg.png";
 import {
   LayoutDashboard,
   CheckSquare,
