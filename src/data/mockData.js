@@ -320,31 +320,31 @@ export const generateMonthlyHeatmap = () => {
 export const users = [
   {
     id: 1,
-    username: 'admin',
+    username: 'admin01',
     password: 'admin123',
     role: 'corporate',
-    name: 'Suresh Menon',
+    name: 'admin01',
     email: 'suresh.menon@company.com',
-    designation: 'Corporate Compliance Head'
+    designation: 'Administrator'
   },
   {
     id: 2,
-    username: 'Compliant',
-    password: 'Compliant123',
+    username: 'Compliance',
+    password: 'CompliantManager123',
     role: 'plant',
-    name: 'Rajesh Kumar',
+    name: 'Compliance Manager',
     email: 'rajesh.kumar@company.com',
-    designation: 'Plant Manager',
+    designation: 'Compliance Manager',
     plantId: 1
   },
   {
     id: 3,
-    username: 'user',
+    username: 'user01',
     password: 'user123',
     role: 'plant',
-    name: 'Priya Sharma',
+    name: 'user01',
     email: 'priya.sharma@company.com',
-    designation: 'Plant Manager',
+    designation: 'user01',
     plantId: 2
   }
 ];
