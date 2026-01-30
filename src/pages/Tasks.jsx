@@ -3,7 +3,6 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Upload, FileText } from "lucide-react";
 
-
 const STORAGE_KEY = "compliance_data";
 
 const CompliancePortals = () => {
@@ -40,7 +39,6 @@ const CompliancePortals = () => {
     "5-Yearly",
   ];
 
-
   const initialState = {
     origin: "",
     category: "",
@@ -59,7 +57,6 @@ const CompliancePortals = () => {
     upcoming: "",
     remarks: "",
   };
-
 
   const temp = {
     origin: "Factories Act, 1948",
@@ -85,7 +82,6 @@ const CompliancePortals = () => {
     if (!editableFields.includes(field)) return;
     setEditingCell({ rowIndex, field });
   };
-
 
   const handleCellChange = (e, rowIndex, field) => {
     const updated = [...data];
@@ -172,7 +168,8 @@ const CompliancePortals = () => {
   const filteredData = data.filter((item) => {
     // console.log(item)
     return (
-      (!filters.origin || item.origin[0]?.toLowerCase() === filters.origin[0]?.toLowerCase() ) &&
+      (!filters.origin ||
+        item.origin[0]?.toLowerCase() === filters.origin[0]?.toLowerCase()) &&
       (!filters.category || item.category === filters.category) &&
       (!filters.responsibility ||
         item.responsibility === filters.responsibility) &&
@@ -250,6 +247,52 @@ const CompliancePortals = () => {
     };
   };
 
+const normalizeExcelDate = (value) => {
+  if (!value) return "";
+
+  // Excel serial number
+  if (typeof value === "number") {
+    const excelEpoch = new Date(1899, 11, 30);
+    return new Date(excelEpoch.getTime() + value * 86400000)
+      .toISOString()
+      .split("T")[0];
+  }
+
+  if (typeof value === "string") {
+    const v = value.trim();
+
+    // yyyy-mm-dd
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+
+    // dd-mm-yyyy OR dd/mm/yyyy
+    if (/^\d{2}[-/]\d{2}[-/]\d{4}$/.test(v)) {
+      const [dd, mm, yyyy] = v.split(/[-/]/);
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    const d = new Date(v);
+    if (!isNaN(d)) return d.toISOString().split("T")[0];
+  }
+
+  return "";
+};
+
+const formatIndianDate = (date) => {
+  if (!date) return "";
+
+  if (/^\d{2}-\d{2}-\d{4}$/.test(date)) return date;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const [yyyy, mm, dd] = date.split("-");
+    return `${dd}-${mm}-${yyyy}`;
+  }
+
+  return date;
+};
+
+
+
+
 
   const handleExcelUpload = (e) => {
     const file = e.target.files[0];
@@ -257,9 +300,9 @@ const CompliancePortals = () => {
 
     const reader = new FileReader();
 
-  reader.onload = (evt) => {
-    const excelData = new Uint8Array(evt.target.result);
-    const workbook = XLSX.read(excelData, { type: "array" });
+    reader.onload = (evt) => {
+      const excelData = new Uint8Array(evt.target.result);
+      const workbook = XLSX.read(excelData, { type: "array" });
 
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
@@ -268,45 +311,43 @@ const CompliancePortals = () => {
         defval: "",
       });
 
-    // ✅ MAP + AUTO CALCULATION
-    const mapped = json.map((row) => {
-      const periodicity = row["Periodicity"] || "Quarterly";
-      const doneDate = row["Done Date"] || "";
+      // ✅ MAP + AUTO CALCULATION
+      const mapped = json.map((row) => {
+        const periodicity = row["Periodicity"] || "Quarterly";
+        const doneDate = normalizeExcelDate(row["Done Date"]);
 
-      // 🔥 AUTO DUE DATE
-      const dueDate = getDueDateByPeriodicity(doneDate, periodicity);
+        // 🔥 AUTO DUE DATE
+        const dueDate = getDueDateByPeriodicity(doneDate, periodicity);
 
-      // 🔥 AUTO STATUS / DAYS / UPCOMING
-      const { status, daysBefore, upcoming } =
-        calculateStatusAndDays(dueDate);
+        // 🔥 AUTO STATUS / DAYS / UPCOMING
+        const { status, daysBefore, upcoming } =
+          calculateStatusAndDays(dueDate);
 
-      return {
-        origin: row["Origin"] || "",
-        category: row["Category"] || "",
-        traceability: row["Traceability"] || "",
-        obligations: row["Obligations"] || "",
-        provision: row["Provision"] || "",
-        applicability: row["Applicability"] || "",
-        responsibility: row["Responsibility"] || "",
-        periodicity,
-        priority: row["Priority"] || "",
-        forms: row["Forms"] || "",
-        doneDate,
-        dueDate,
-        status,
-        daysBefore,
-        upcoming,
-        remarks: row["Remarks"] || "",
-      };
-    });
+        return {
+          origin: row["Origin"] || "",
+          category: row["Category"] || "",
+          traceability: row["Traceability"] || "",
+          obligations: row["Obligations"] || "",
+          provision: row["Provision"] || "",
+          applicability: row["Applicability"] || "",
+          responsibility: row["Responsibility"] || "",
+          periodicity,
+          priority: row["Priority"] || "",
+          forms: row["Forms"] || "",
+          doneDate,
+          dueDate,
+          status,
+          daysBefore,
+          upcoming,
+          remarks: row["Remarks"] || "",
+        };
+      });
 
-    setData(mapped); // ✅ table + localStorage auto update
+      setData(mapped); // ✅ table + localStorage auto update
+    };
+
+    reader.readAsArrayBuffer(file);
   };
-
-  reader.readAsArrayBuffer(file);
-};
-
-
 
   const downloadExcel = () => {
     if (!data.length) return;
@@ -340,13 +381,11 @@ const CompliancePortals = () => {
     });
 
     const file = new Blob([excelBuffer], {
-      type:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
 
     saveAs(file, "Compliance_Register.xlsx");
   };
-
 
   // ================= UI =================
   return (
@@ -383,8 +422,8 @@ const CompliancePortals = () => {
             + Add Compliance
           </button>
 
-    {/* Clear All */}
-    {/* <button
+          {/* Clear All */}
+          {/* <button
       onClick={() => {
         localStorage.removeItem(STORAGE_KEY);
         setData([]);
@@ -393,65 +432,59 @@ const CompliancePortals = () => {
     >
       Clear All
     </button> */}
-  </div>
-</div>
-
+        </div>
+      </div>
 
       {/* Filters */}
-    <div className="bg-white p-4 rounded-[20px] shadow mb-4">
-  <h3 className="font-semibold mb-3">Filters</h3>
+      <div className="bg-white p-4 rounded-[20px] shadow mb-4">
+        <h3 className="font-semibold mb-3">Filters</h3>
 
-  <div className="flex flex-col md:flex-row gap-4 text-sm w-full">
+        <div className="flex flex-col md:flex-row gap-4 text-sm w-full">
+          {/* SEARCH – 60% */}
+          <input
+            name="origin"
+            placeholder="Search by Origin"
+            value={filters.origin}
+            onChange={handleFilterChange}
+            className="input rounded-[10px] w-full md:w-[60%]"
+          />
 
-    {/* SEARCH – 60% */}
-    <input
-      name="origin"
-      placeholder="Search by Origin"
-      value={filters.origin}
-      onChange={handleFilterChange}
-      className="input rounded-[10px] w-full md:w-[60%]"
-    />
+          {/* RIGHT SIDE CONTROLS */}
+          <div className="flex flex-1 gap-4">
+            <select
+              name="priority"
+              value={filters.priority}
+              onChange={handleFilterChange}
+              className="input rounded-[10px] flex-1"
+            >
+              <option value="">Priority</option>
+              <option>Very High</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
 
-    {/* RIGHT SIDE CONTROLS */}
-    <div className="flex flex-1 gap-4">
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+              className="input rounded-[10px] flex-1"
+            >
+              <option value="">Status</option>
+              <option>Non-Compliance</option>
+              <option>Compliance Initiated</option>
+              <option>Complied</option>
+            </select>
 
-      <select
-        name="priority"
-        value={filters.priority}
-        onChange={handleFilterChange}
-        className="input rounded-[10px] flex-1"
-      >
-        <option value="">Priority</option>
-        <option>Very High</option>
-        <option>High</option>
-        <option>Medium</option>
-        <option>Low</option>
-      </select>
-
-      <select
-        name="status"
-        value={filters.status}
-        onChange={handleFilterChange}
-        className="input rounded-[10px] flex-1"
-      >
-        <option value="">Status</option>
-        <option>Non-Compliance</option>
-        <option>Compliance Initiated</option>
-        <option>Complied</option>
-      </select>
-
-      <button
-        onClick={clearFilters}
-        className="bg-gray-600 hover:bg-gray-700 transition text-white px-4 py-2 rounded-lg whitespace-nowrap"
-      >
-        Clear
-      </button>
-
-    </div>
-  </div>
-</div>
-
-
+            <button
+              onClick={clearFilters}
+              className="bg-gray-600 hover:bg-gray-700 transition text-white px-4 py-2 rounded-lg whitespace-nowrap"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Table */}
       <div className="overflow-x-scroll bg-white shadow rounded">
@@ -475,6 +508,8 @@ const CompliancePortals = () => {
                 "Status",
                 "Days Before",
                 "Upcoming",
+                "Upload Evidence",
+                "",
                 "Remarks",
               ].map((h) => (
                 <th key={h} className="border p-2 whitespace-nowrap">
@@ -507,7 +542,7 @@ const CompliancePortals = () => {
                       onDoubleClick={() => handleDoubleClick(index, field)}
                     >
                       {editingCell.rowIndex === index &&
-                        editingCell.field === field ? (
+                      editingCell.field === field ? (
                         field === "periodicity" ? (
                           // 🔽 Periodicity Dropdown
                           <select
@@ -523,76 +558,100 @@ const CompliancePortals = () => {
                               </option>
                             ))}
                           </select>
-                        ) : (
-                          // ✏️ Normal Input
-                          field === "forms" ? (
-                            <input
-                              autoFocus
-                              type="file"
-                              onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                  handleCellChange({ target: { value: file.name } }, index, field);
-                                }
-                                stopEditing();
-                              }}
-                              onBlur={stopEditing}
-                              className="w-full border px-1 text-[10px]"
-                            />
-                          ) : (
-                            <input
-                              autoFocus
-                              type={field.includes("Date") ? "date" : "text"}
-                              value={item[field]}
-                              onChange={(e) => handleCellChange(e, index, field)}
-                              onBlur={stopEditing}
-                              onKeyDown={(e) =>
-                                e.key === "Enter" && stopEditing()
+                        ) : // ✏️ Normal Input
+                        field === "forms" ? (
+                          <input
+                            autoFocus
+                            type="file"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                handleCellChange(
+                                  { target: { value: file.name } },
+                                  index,
+                                  field,
+                                );
                               }
-                              className="w-full border px-1 text-xs"
-                            />
-                          )
+                              stopEditing();
+                            }}
+                            onBlur={stopEditing}
+                            className="w-full border px-1 text-[10px]"
+                          />
+                        ) : (
+                          <input
+                            autoFocus
+                            type={field.includes("Date") ? "date" : "text"}
+                            value={item[field]}
+                            onChange={(e) => handleCellChange(e, index, field)}
+                            onBlur={stopEditing}
+                            onKeyDown={(e) =>
+                              e.key === "Enter" && stopEditing()
+                            }
+                            className="w-full border px-1 text-xs"
+                          />
                         )
                       ) : field === "forms" ? (
-                        <div className="flex items-center gap-1 justify-center text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 max-w-[120px] mx-auto overflow-hidden">
+                        <a
+                          href={item[field]}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 justify-center text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 max-w-[120px] mx-auto overflow-hidden hover:bg-blue-100 cursor-pointer"
+                        >
                           <FileText size={12} className="shrink-0" />
-                          <span className="truncate">{item[field] || "Upload"}</span>
-                        </div>
-                      ) : (
-                        item[field]
-                      )}
+                          <span className="truncate">
+                            {item[field] ? "Download Form" : "Upload"}
+                          </span>
+                        </a>
+                      ) : field === "doneDate" ? (
+                           formatIndianDate(item[field])
+                         ) : (
+                           item[field]
+                         )
+                         }
                     </td>
                   ))}
 
-                  <td className="border p-1">{item.dueDate}</td>
+                  <td className="border p-1">{formatIndianDate(item.dueDate)}</td>
                   <td
-                    className={`border p-1 font-semibold ${item.status === "Non-Compliance"
-                      ? "text-red-400"
-                      : "text-green-400"
-                      }`}
+                    className={`border p-1 font-semibold ${
+                      item.status === "Non-Compliance"
+                        ? "text-red-400"
+                        : "text-green-400"
+                    }`}
                   >
                     {item.status}
                   </td>
                   <td className="border p-1">{item.daysBefore}</td>
                   <td
-                    className={`border p-1 font-semibold ${item.upcoming === "Expired"
-                      ? "text-red-400"
-                      : "text-green-400"
-                      }`}
+                    className={`border p-1 font-semibold ${
+                      item.upcoming === "Expired"
+                        ? "text-red-400"
+                        : "text-green-400"
+                    }`}
                   >
                     {item.upcoming}
                   </td>
 
-                  <td className="border p-1">{item.remarks}</td>
+                  <td className="">
+                  <div className="flex items-center gap-1 justify-center text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 max-w-[120px] mx-auto overflow-hidden">
+                          <FileText size={12} className="shrink-0" />
+                          <span className="truncate">{ "Upload"}</span>
+                        </div>
+
+                  </td>
+
+
                   <td className="border p-1 text-center">
                     <button
                       type="button"
                       onClick={() => handleSubmit(item)}
-                      className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition"
+                      className="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 py-2 rounded-lg transition"
                     >
                       Submit
                     </button>
                   </td>
+                  <td className="border p-1">{item.remarks}</td>
                 </tr>
               ))
             )}
@@ -612,8 +671,8 @@ const CompliancePortals = () => {
             >
               {Object.keys(initialState).map((key) =>
                 key === "remarks" ||
-                  key === "provision" ||
-                  key === "obligations" ? (
+                key === "provision" ||
+                key === "obligations" ? (
                   <textarea
                     key={key}
                     name={key}
@@ -622,10 +681,11 @@ const CompliancePortals = () => {
                     className="input md:col-span-3"
                     onChange={handleChange}
                   />
-
                 ) : key === "forms" ? (
                   <div key={key} className="flex flex-col gap-1">
-                    <label className="text-[10px] uppercase font-semibold text-gray-400 ml-1">Upload Form</label>
+                    <label className="text-[10px] uppercase font-semibold text-gray-400 ml-1">
+                      Upload Form
+                    </label>
                     <div className="relative group">
                       <input
                         type="file"
