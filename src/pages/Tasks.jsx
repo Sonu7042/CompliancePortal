@@ -29,14 +29,14 @@ const CompliancePortals = () => {
 
   // Periodicity dropdown options
   const PERIODICITY_OPTIONS = [
-    "Monthly",
-    "Quarterly",
-    "Half-Yearly",
-    "Yearly",
-    "2-Yearly",
-    "3-Yearly",
-    "4-Yearly",
-    "5-Yearly",
+      "Monthly",
+      "Quarterly",
+      "Half-Yearly",
+      "Yearly",
+      "2-Yearly",
+      "3-Yearly",
+      "4-Yearly",
+      "5-Yearly",
   ];
 
   const initialState = {
@@ -51,10 +51,10 @@ const CompliancePortals = () => {
     priority: "",
     forms: "",
     doneDate: "",
-    dueDate: "",
-    status: "Non-Compliance",
-    daysBefore: "",
-    upcoming: "",
+    // dueDate: "",
+    // status: "Non-Compliance",
+    // daysBefore: "",
+    // upcoming: "",
     remarks: "",
   };
 
@@ -66,14 +66,14 @@ const CompliancePortals = () => {
     provision: "Safety audit and appointment of safety officer",
     applicability: "Manufacturing units with 10+ workers",
     responsibility: "HR Manager",
-    periodicity: "Annual",
+    periodicity: "Yearly",
     priority: "High",
     forms: "",
     doneDate: "2025-01-10",
-    dueDate: "2025-03-31",
-    status: "Non-Compliance",
-    daysBefore: "80",
-    upcoming: "Yes",
+    // dueDate: "2025-03-31",
+    // status: "Non-Compliance",
+    // daysBefore: "80",
+    // upcoming: "Yes",
     remarks: "Safety audit pending",
   };
 
@@ -141,14 +141,30 @@ const CompliancePortals = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const updatedData = [...data, form];
-    setData(updatedData);
+  // 🔥 Auto calculate before saving
+  const dueDate = getDueDateByPeriodicity(
+    form.doneDate,
+    form.periodicity
+  );
 
-    setForm(initialState);
-    setShowForm(false);
+  const { status, daysBefore, upcoming } =
+    calculateStatusAndDays(dueDate);
+
+  const newEntry = {
+    ...form,
+    dueDate,
+    status,
+    daysBefore,
+    upcoming,
   };
+
+  setData([...data, newEntry]);
+
+  setForm(initialState);
+  setShowForm(false);
+};
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
