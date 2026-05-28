@@ -102,7 +102,6 @@ const CompliancePortals = () => {
       updated[rowIndex].daysBefore = daysBefore;
       updated[rowIndex].upcoming = upcoming;
     }
-
     setData(updated);
   };
 
@@ -604,7 +603,6 @@ const CompliancePortals = () => {
                     className="input md:col-span-3"
                     onChange={handleChange}
                   />
-
                 ) : key === "forms" ? (
                   <div key={key} className="flex flex-col gap-1">
                     <label className="text-[10px] uppercase font-semibold text-gray-400 ml-1">Upload Form</label>
